@@ -1,13 +1,16 @@
 package it.raffo.raffopizza.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Pizza")
@@ -33,6 +36,9 @@ public class Pizza {
     @NotNull(message = "Campo Obblihatorio")
     @Column(name = "price", nullable = false)
     private Double price;
+
+    @OneToMany(mappedBy = "pizza")
+    private List<Sale> sale;
 
     // --------------------------------------------
     // ------------ GETTERS & SETTERS -------------
@@ -76,6 +82,14 @@ public class Pizza {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public List<Sale> getSale() {
+        return sale;
+    }
+
+    public void setSale(List<Sale> sale) {
+        this.sale = sale;
     }
 
 }

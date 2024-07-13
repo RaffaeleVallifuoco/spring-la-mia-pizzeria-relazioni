@@ -1,5 +1,7 @@
 package it.raffo.raffopizza.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.apache.el.stream.Optional;
@@ -11,7 +13,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import it.raffo.raffopizza.repository.PizzaRepo;
+import it.raffo.raffopizza.repository.SaleRepo;
 import it.raffo.raffopizza.model.Pizza;
+import it.raffo.raffopizza.model.Sale;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +34,10 @@ import jakarta.validation.Valid;
 public class PizzaController {
 
     @Autowired
-    private PizzaRepo repo;
+    private PizzaRepo pizzaRepo;
+
+    @Autowired
+    private SaleRepo saleRepo;
 
     @GetMapping
     public String index(Model model, @RequestParam(name = "name", required = false) String name,
@@ -39,13 +47,13 @@ public class PizzaController {
 
         if (name == null && description == null) {
 
-            pizzeList = repo.findAll();
+            pizzeList = pizzaRepo.findAll();
 
         } else if (name == null) {
-            pizzeList = repo.findByDescriptionContainingIgnoreCase(description);
+            pizzeList = pizzaRepo.findByDescriptionContainingIgnoreCase(description);
         } else {
 
-            pizzeList = repo.findByNameContainingIgnoreCase(name);
+            pizzeList = pizzaRepo.findByNameContainingIgnoreCase(name);
         }
 
         model.addAttribute("list", pizzeList);
@@ -56,7 +64,7 @@ public class PizzaController {
     @GetMapping("/show/{id}")
     public String show(@PathVariable("id") Integer id, Model model) {
 
-        model.addAttribute("pizza", repo.getReferenceById(id));
+        model.addAttribute("pizza", pizzaRepo.getReferenceById(id));
 
         return "/pizza/show";
     }
@@ -81,7 +89,7 @@ public class PizzaController {
             return "/pizza/create";
         }
 
-        repo.save(pizzaForm);
+        pizzaRepo.save(pizzaForm);
 
         return "redirect:/index";
 
@@ -90,7 +98,7 @@ public class PizzaController {
     @GetMapping("/carousel")
     public String photo(Model model) {
 
-        model.addAttribute("pizza", repo.findAll());
+        model.addAttribute("pizza", pizzaRepo.findAll());
 
         return "/pizza/carousel";
     }
@@ -98,7 +106,7 @@ public class PizzaController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
 
-        model.addAttribute("pizza", repo.findById(id).get());
+        model.addAttribute("pizza", pizzaRepo.findById(id).get());
 
         return "/pizza/edit";
     }
@@ -110,7 +118,7 @@ public class PizzaController {
             return "/pizza/edit";
         }
 
-        repo.save(pizzaUpdate);
+        pizzaRepo.save(pizzaUpdate);
 
         return "redirect:/index";
     }
@@ -119,9 +127,21 @@ public class PizzaController {
     public String delete(@PathVariable("id") Integer id) {
         // TODO: process POST request
 
-        repo.deleteById(id);
+        pizzaRepo.deleteById(id);
 
         return "redirect:/index";
+    }
+
+    @GetMapping("/{id}/sale")
+    public String getSale(@PathVariable("id") Integer id, Model model) {
+
+        Pizza pizza = pizzaRepo.findById(id).get();
+        Sale sale = new Sale();
+        sale.setPizzaSale(pizza);
+
+        model.addAttribute("sale", sale);
+
+        return "/pizza/index";
     }
 
 }
