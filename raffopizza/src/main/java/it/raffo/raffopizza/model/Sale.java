@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 
 @Entity
 @Table(name = "SALE")
@@ -35,8 +36,7 @@ public class Sale {
     private String discount;
 
     @ManyToOne
-    @JoinColumn(name = "Pizza.id", nullable = false)
-
+    @JoinColumn(name = "pizza_id", nullable = false)
     private Pizza pizza;
 
     public Integer getId() {
@@ -75,7 +75,7 @@ public class Sale {
         return pizza;
     }
 
-    public void setPizzaSale(Pizza pizza) {
+    public void setPizza(Pizza pizza) {
         this.pizza = pizza;
     }
 

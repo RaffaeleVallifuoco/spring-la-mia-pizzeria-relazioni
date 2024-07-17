@@ -65,6 +65,8 @@ public class SaleController {
         }
         System.err.println("fuori if errore");
 
+        System.out.println(saleForm.getPizza());
+
         saleRepo.save(saleForm);
 
         return "redirect:/sale";
