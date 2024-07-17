@@ -2,6 +2,7 @@ package it.raffo.raffopizza.model;
 
 import java.time.LocalDate;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "SALE")
@@ -19,17 +22,21 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "Inserisci la data di inizio offerta")
     @Column(name = "START_SALE", nullable = false)
     private LocalDate startSale;
 
+    @NotNull(message = "Inserisci la data di fine offerta")
     @Column(name = "FINISH_SALE", nullable = false)
     private LocalDate finishSale;
 
+    @NotBlank(message = "Il campo non può essere vuoto")
     @Column(name = "DISCOUNT", nullable = false)
     private String discount;
 
     @ManyToOne
     @JoinColumn(name = "Pizza.id", nullable = false)
+
     private Pizza pizza;
 
     public Integer getId() {
